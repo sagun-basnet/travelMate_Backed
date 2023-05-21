@@ -27,15 +27,6 @@ app.use("/api/guid", guidRouter);
 app.use("/api/package", packageRouter);
 app.use("/api/review", reviewRouter);
 // const bodyParser = require("body-parser");
-// const mysql = require("mysql2");
-// const cors = require("cors");
-
-// const db = mysql.createPool({
-//     host: "localhost",
-//     user: "root",
-//     password: "12345",
-//     database: "crud"
-// });
 
 // app.use(cors());
 // app.use(express.json());
