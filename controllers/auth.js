@@ -15,12 +15,13 @@ export const register = (req,res)=>{
             const salt = bcrypt.genSaltSync(10);
             const hashedPassword = bcrypt.hashSync(req.body.password, salt)
 
-            const q = "INSERT INTO user_info(`user_name`,`email`,`password`,`user_phone`) VALUE (?) ";
+            const q = "INSERT INTO user_info(`user_name`,`email`,`password`,`user_phone`,`role`) VALUE (?) ";
             const values = [
                 req.body.user_name,
                 req.body.email,
                 hashedPassword,
-                req.body.user_phone
+                req.body.user_phone,
+                req.body.role,
             ];
             db.query(q,[values], (err,data) =>{
                 if(err) return res.status(500).json(err);
@@ -29,7 +30,8 @@ export const register = (req,res)=>{
     })
 
 }
-// export default register;
+
+//============login
 export const login = (req,res)=>{
     const q = "SELECT * from user_info where email = ?";
 
@@ -37,13 +39,14 @@ export const login = (req,res)=>{
         if(err) return res.status(500).json(err);
         if(data.length === 0) return res.status(404).json("User not found!");
 
+        // const userRole = req.body.role;
         const checkPassword = bcrypt.compareSync(req.body.password, data[0].password)
 
         if(!checkPassword) return res.status(400).json("Wrong Password or Email");
 
         const token = jwt.sign({user_id:data[0].user_id}, "secretkey");
 
-        const {password, ...others} = data[0];
+        const {password,role, ...others} = data[0];
 
         res.cookie("accessToken", token, {
             httpOnly: true,
